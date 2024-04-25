@@ -1,6 +1,16 @@
 import { db } from "@/db"
 import Link from "next/link"
 
+/* export const dynamic = "force-dynamic" // this will force this page
+// to be dynamic and not just reserve whatever html existed at build 
+// i.e. never caches*/
+
+/* export const revalidate = 3; // this will reset the cached page every 
+// 3 seconds */
+
+/* import { revalidatePath } from "next/cache"
+revalidatePath('/snippets') // this forces a rerender on-demand */
+
 export default async function Home() {
   const snippets = await db.snippet.findMany()
 

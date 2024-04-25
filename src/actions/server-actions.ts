@@ -2,6 +2,7 @@
 
 import { db } from "@/db"
 import { redirect } from "next/navigation"
+import { revalidatePath } from "next/cache"
 
 export async function editSnippet( id: number, code: string) {
     //console.log(id, code)
@@ -10,6 +11,9 @@ export async function editSnippet( id: number, code: string) {
         data: { code }
     })
 
+    revalidatePath(`/snippets/${id}`)
+    // don't need to rerender home page here because home page
+    // only shows the TITLE, not the code with it
     redirect(`/snippets/${id}`)
 }
 
@@ -18,6 +22,7 @@ export async function deleteSnippet( id: number ) {
         where: {id}
     })
 
+    revalidatePath('/') // needs rerendered so we don't show deleted snip
     redirect('/')
 }
 
@@ -45,7 +50,7 @@ export async function createSnippet(formState: {message: string}, formData: Form
             code: code
         }
     });
-    console.log(snippet);
+    //console.log(snippet);
     //throw new Error('Failed to save to database')
     } catch (err: unknown){
         if(err instanceof Error){
@@ -59,6 +64,7 @@ export async function createSnippet(formState: {message: string}, formData: Form
         }
     } 
 
+    revalidatePath('/')
     // Redirect user to homepage or specific snippet page for newly create snippet
     redirect('/'); // NOTE: redirect actually throws a speciall error that
     // tells Next.js to redirect the user. SO redirect() CANNOT go inside of a try

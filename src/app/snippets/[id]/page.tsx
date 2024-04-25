@@ -10,7 +10,7 @@ interface  SnippetShowPageProps{
 }
 
 export default async function SnippetShowPage(props: SnippetShowPageProps){
-    await new Promise((r) => setTimeout(r, 2000)) // force wait 2 sec to check
+    //await new Promise((r) => setTimeout(r, 2000)) // force wait 2 sec to check
     // loading.tsx file
 
     const snippet = await db.snippet.findFirst({
@@ -41,4 +41,15 @@ export default async function SnippetShowPage(props: SnippetShowPageProps){
             </pre>
         </div>
     )
+}
+
+export async function generateStaticParams(){
+    // allows us to add caching to DYNAMIC pages within the app
+    const snippets = await db.snippet.findMany()
+
+    return snippets.map( (snippet) => {
+        return{
+            id: snippet.id.toString(), // staticParams expects STRINGS
+        }
+    })
 }
